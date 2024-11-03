@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kerekítési Gyakorlat</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- LottieFiles CSS (optional, for positioning) -->
+    <style>
+        /* Általános stílusok */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            display: flex;
+            flex-direction: row; /* Változtatás a tartalom elrendezéséhez */
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Oldalsó konténer stílus */
+        .settings-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+            max-width: 250px;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .settings-container h2 {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #ff6f61;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .settings-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .settings-container input[type="number"],
+        .settings-container select {
+            padding: 8px;
+            font-size: 1em;
+            border: 2px solid #ff6f61;
+            border-radius: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .settings-container input[type="number"]:focus,
+        .settings-container select:focus {
+            border-color: #ff9671;
+            outline: none;
+        }
+
+        /* Kártya stílus */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            position: relative;
+            z-index: 1;
+            max-width: 600px; /* Csökkentett maximális szélesség */
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Animációk */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes floatEmoji {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(360deg); }
+            100% { transform: translateY(0) rotate(720deg); }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(200px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sadFace {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes hintBounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Szöveg és bemenet stílus */
+        .number {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #ff6f61;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 200px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus {
+            border-color: #ff9671;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #ff9671;
+            transform: scale(1.05);
+        }
+
+        /* Üzenetek stílus */
+        .message {
+            font-size: 1.2em;
+            margin-top: 20px;
+            min-height: 1.8em;
+            transition: color 0.3s ease;
+        }
+
+        .correct {
+            color: green;
+            animation: celebrate 1s;
+        }
+
+        .incorrect {
+            color: red;
+            animation: shake 0.5s;
+        }
+
+        .hint {
+            color: #FFA500;
+            animation: hintBounce 1s;
+        }
+
+        /* Animált háttér elemek */
+        .background-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 111, 97, 0.2);
+            animation: float 6s infinite;
+            z-index: 0;
+        }
+
+        .background-element1 {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .background-element2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 75%;
+            animation-delay: 2s;
+        }
+
+        .background-element3 {
+            width: 100px;
+            height: 100px;
+            top: 80%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        /* Több halvány, mozgó emoji */
+        .emoji-background {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.2; /* Halvány megjelenés */
+            animation: floatEmoji 10s infinite;
+        }
+
+        .emoji-bg1 {
+            top: 5%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .emoji-bg2 {
+            top: 50%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .emoji-bg3 {
+            top: 75%;
+            left: 40%;
+            animation-delay: 4s;
+        }
+
+        .emoji-bg4 {
+            top: 30%;
+            left: 10%;
+            animation-delay: 6s;
+        }
+
+        .emoji-bg5 {
+            top: 65%;
+            left: 70%;
+            animation-delay: 8s;
+        }
+
+        /* Számegyenes stílusok */
+        .number-line {
+            margin-top: 20px;
+            position: relative;
+            height: 80px; /* Csökkentett magasság */
+            display: none; /* Alapértelmezetten rejtve */
+            transition: transform 0.5s ease;
+            overflow: hidden; /* Hogy a túlnyúló részek ne látszódjanak */
+        }
+
+        .number-line.visible {
+            display: block;
+        }
+
+        .number-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .tick {
+            stroke: #333;
+            stroke-width: 2;
+        }
+
+        .label {
+            font-size: 0.8em;
+            fill: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .current-number-line {
+            stroke: red;
+            stroke-width: 3;
+        }
+
+        .neighbor-blink {
+            stroke: #4CAF50;
+            stroke-width: 3;
+            animation: blink 1s infinite;
+        }
+
+        /* Vicces animáció a helyes válaszhoz */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6f61;
+            opacity: 0.8;
+            border-radius: 50%;
+            animation: confettiFall 2s forwards;
+        }
+
+        /* Emoji stílusok */
+        .emoji {
+            position: absolute;
+            font-size: 2em;
+            animation: floatEmoji 4s infinite;
+            animation-duration: 2s; /* Animáció hossza 2 másodperc */
+            opacity: 0.3; /* Halványabb megjelenés */
+        }
+
+        .emoji1 {
+            top: 15%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .emoji2 {
+            top: 40%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .emoji3 {
+            bottom: 15%;
+            left: 25%;
+            animation-delay: 1.5s;
+        }
+
+        .emoji4 {
+            top: 70%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+
+        .emoji5 {
+            bottom: 40%;
+            left: 10%;
+            animation-delay: 2.5s;
+        }
+
+        /* Reszponzív Design */
+        @media (max-width: 600px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .settings-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .number {
+                font-size: 1.8em;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .number-line {
+                height: 80px;
+            }
+
+            .label {
+                font-size: 0.6em;
+            }
+
+            .emoji {
+                font-size: 1.5em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        /* Mobil billentyűzet hatására történő görgetés */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px; /* Csökkentett maximális szélesség */
+            height: 100%;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Oldalsó beállítási konténer -->
+    <div class="settings-container">
+        <h2>Beállítások</h2>
+        <label for="min-value">Minimum érték:</label>
+        <input type="number" id="min-value" value="0" min="0" max="1000">
+
+        <label for="max-value">Maximum érték:</label>
+        <input type="number" id="max-value" value="500" min="0" max="10000">
+
+        <label for="rounding-unit">Kerekítési egység:</label>
+        <select id="rounding-unit">
+            <option value="10">Tízesre</option>
+            <option value="100">Százasra</option>
+        </select>
+
+        <button onclick="applySettings()">Alkalmaz</button>
+    </div>
+
+    <!-- Animált háttér elemek -->
+    <div class="background-element background-element1"></div>
+    <div class="background-element background-element2"></div>
+    <div class="background-element background-element3"></div>
+
+    <!-- Halvány, mozgó emojik a háttérben -->
+    <div class="emoji-background emoji-bg1">🌟</div>
+    <div class="emoji-background emoji-bg2">✨</div>
+    <div class="emoji-background emoji-bg3">💫</div>
+    <div class="emoji-background emoji-bg4">🌈</div>
+    <div class="emoji-background emoji-bg5">⭐</div>
+
+    <!-- Vicces, mozgó emojik -->
+    <div class="emoji emoji1">😄</div>
+    <div class="emoji emoji2">🎉</div>
+    <div class="emoji emoji3">🚀</div>
+    <div class="emoji emoji4">🔥</div>
+    <div class="emoji emoji5">💥</div>
+
+    <div class="card">
+        <div class="content-wrapper">
+            <h1>Kerekítési Gyakorlat</h1>
+            <div class="number" id="number">--</div>
+            <input type="number" id="answer" placeholder="Kerekítve" onkeydown="handleEnter(event)">
+            <br>
+            <button onclick="checkAnswer()">Ellenőriz</button>
+            <button onclick="toggleNumberLine()">Számegyenes megjelenítése/elrejtése</button>
+            <button onclick="generateNumber()" id="next-button" style="display: none;">Következő szám</button>
+            <div class="message" id="message"></div>
+
+            <!-- Számegyenes -->
+            <div class="number-line" id="number-line">
+                <!-- SVG alapú számegyenes -->
+                <svg id="number-line-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 80">
+                    <g id="number-line-group">
+                        <line x1="0" y1="40" x2="600" y2="40" stroke="#333" stroke-width="4" />
+                        <!-- Dinamikusan hozzáadott elemek -->
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lottie Animációk -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
+
+    <script>
+        let currentNumber = 0;
+        let hintStep = 0;
+        let maxHints = 5; // Ötödik hibás válasz után megjelenik a helyes válasz
+        let roundingUnit = 10; // Alapértelmezett kerekítési egység
+
+        // Beállítások alkalmazása
+        function applySettings() {
+            const min = parseInt(document.getElementById('min-value').value);
+            const max = parseInt(document.getElementById('max-value').value);
+            const unit = parseInt(document.getElementById('rounding-unit').value);
+
+            if (isNaN(min) || isNaN(max) || min >= max) {
+                alert("Kérlek, adj meg érvényes minimum és maximum értékeket, ahol a minimum kisebb, mint a maximum.");
+                return;
+            }
+
+            roundingUnit = unit;
+            generateNumber();
+        }
+
+        // Generál egy véletlenszámot a beállított tartományból
+        function generateNumber() {
+            const min = parseInt(document.getElementById('min-value').value);
+            const max = parseInt(document.getElementById('max-value').value);
+            currentNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            document.getElementById('number').innerText = currentNumber;
+            document.getElementById('answer').value = '';
+            document.getElementById('message').innerText = '';
+            document.getElementById('message').className = 'message';
+            document.getElementById('next-button').style.display = 'none';
+            document.getElementById('answer').focus();
+            hintStep = 0;
+            drawNumberLine(currentNumber);
+        }
+
+        // Kerekítési függvény a beállított egység alapján
+        function roundNumber(num) {
+            return Math.round(num / roundingUnit) * roundingUnit;
+        }
+
+        // Válasz ellenőrzése
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const correctAnswer = roundNumber(currentNumber);
+            const message = document.getElementById('message');
+
+            if (userAnswer === correctAnswer) {
+                message.innerText = "Gratulálok, helyes válasz! 🎉";
+                message.className = 'message correct animate__animated animate__bounceIn';
+                addConfetti();
+                document.getElementById('next-button').style.display = 'inline-block';
+                showPositiveAnimation();
+            } else {
+                hintStep++;
+                if (hintStep < maxHints) {
+                    provideHint(hintStep);
+                } else {
+                    // Ötödik hibás válasz után megjelenik a helyes válasz
+                    message.innerText = `Most nem sikerült, de ne add fel! Gyakorolj tovább, menni fog! 😊 A helyes válasz: ${correctAnswer}.`;
+                    message.className = 'message incorrect animate__animated animate__tada';
+                    document.getElementById('next-button').style.display = 'inline-block';
+                }
+                showNegativeAnimation();
+            }
+        }
+
+        // Válaszgenerálás hibás válaszok esetén
+        function provideHint(step) {
+            const message = document.getElementById('message');
+            let lowerUnit, upperUnit;
+
+            if (roundingUnit === 10) {
+                lowerUnit = Math.floor(currentNumber / 10) * 10;
+                upperUnit = lowerUnit + 10;
+            } else if (roundingUnit === 100) {
+                lowerUnit = Math.floor(currentNumber / 100) * 100;
+                upperUnit = lowerUnit + 100;
+            }
+
+            switch(step) {
+                case 1:
+                    message.innerText = "Most nem sikerült 😕, de tudom, hogy menni fog, mert ügyes vagy! Próbáld újra!";
+                    message.className = 'message incorrect animate__animated animate__shakeX';
+                    highlightNeighbors(lowerUnit, upperUnit);
+                    break;
+                case 2:
+                    if (roundingUnit === 10) {
+                        message.innerText = `A kerekítendő szám két szomszédja a: ${lowerUnit} és ${upperUnit}. 🤔`;
+                    } else if (roundingUnit === 100) {
+                        message.innerText = `A kerekítendő szám két szomszédja a: ${lowerUnit} és ${upperUnit}. 🤔`;
+                    }
+                    message.className = 'message hint animate__animated animate__fadeIn';
+                    break;
+                case 3:
+                    if (roundingUnit === 10) {
+                        const distanceToLower = currentNumber - lowerUnit;
+                        const distanceToUpper = upperUnit - currentNumber;
+                        message.innerText = `Figyelj! A szám ${distanceToLower} egységre van ${lowerUnit}-től és ${distanceToUpper} egységre ${upperUnit}-tól. 📐Mit gondolsz, melyikre kell kerekíteni?`;
+                    } else if (roundingUnit === 100) {
+                        const distanceToLower = currentNumber - lowerUnit;
+                        const distanceToUpper = upperUnit - currentNumber;
+                        message.innerText = `Figyelj! A szám ${distanceToLower} egységre van ${lowerUnit}-től és ${distanceToUpper} egységre ${upperUnit}-tól. 📐Mit gondolsz, melyikre kell kerekíteni?`;
+                    }
+                    message.className = 'message hint animate__animated animate__fadeInUp';
+                    break;
+                case 4:
+                    if (roundingUnit === 10) {
+                        message.innerText = `Emlékezz, hogy a kerekítésnél a közelebbi tízesre kerekítünk. 📏`;
+                    } else if (roundingUnit === 100) {
+                        message.innerText = `Emlékezz, hogy a kerekítésnél a közelebbi százasra kerekítünk. 📏`;
+                    }
+                    message.className = 'message hint animate__animated animate__fadeIn';
+                    break;
+                // Ne felejtsük el, hogy az ötödik hibás válasz nem hívja meg a provideHint-ot
+                default:
+                    break;
+            }
+        }
+
+        // Számegyenes szomszédos egységeinek kiemelése
+        function highlightNeighbors(lowerUnit, upperUnit) {
+            const svg = document.getElementById('number-line-svg');
+            const ticks = svg.querySelectorAll('.tick');
+            ticks.forEach(tick => {
+                const tickValue = parseInt(tick.getAttribute('data-value'));
+                if (tickValue === lowerUnit || tickValue === upperUnit) {
+                    tick.classList.add('neighbor-blink');
+                }
+            });
+        }
+
+        // Számegyenes rajzolása a jelenlegi szám körül a kerekítési egység alapján
+        function drawNumberLine(number) {
+            const svg = document.getElementById('number-line-svg');
+            const group = document.getElementById('number-line-group');
+            while (group.children.length > 1) { // Csak a ticks és label-ek maradnak
+                group.removeChild(group.lastChild);
+            }
+
+            let lowerUnit, upperUnit;
+            let totalUnits = 0;
+
+            if (roundingUnit === 10) {
+                lowerUnit = Math.floor(number / 10) * 10 - 30;
+                upperUnit = Math.floor(number / 10) * 10 + 30;
+                totalUnits = 6; // 3 tízes balra és jobbra
+            } else if (roundingUnit === 100) {
+                lowerUnit = Math.floor(number / 100) * 100 - 200;
+                upperUnit = Math.floor(number / 100) * 100 + 200;
+                totalUnits = 4; // 2 százas balra és jobbra
+            }
+
+            // Korlátozzuk a tartományt 0 és maxValue között
+            const minValue = parseInt(document.getElementById('min-value').value);
+            const maxValue = parseInt(document.getElementById('max-value').value);
+
+            if (lowerUnit < minValue) {
+                upperUnit += (minValue - lowerUnit);
+                lowerUnit = minValue;
+            }
+            if (upperUnit > maxValue) {
+                lowerUnit -= (upperUnit - maxValue);
+                upperUnit = maxValue;
+                if (lowerUnit < minValue) {
+                    lowerUnit = minValue;
+                }
+            }
+
+            // Tízes kerekítés esetén mindig 7 tick, százasnál 5 tick
+            let ticksToShow = roundingUnit === 10 ? 7 : 5;
+
+            // Kiszámoljuk az új alját és tetejét, hogy mindig a megfelelő számú tick legyen
+            if (roundingUnit === 10) {
+                lowerUnit = Math.floor(number / 10) * 10 - 30;
+                upperUnit = Math.floor(number / 10) * 10 + 30;
+            } else if (roundingUnit === 100) {
+                lowerUnit = Math.floor(number / 100) * 100 - 200;
+                upperUnit = Math.floor(number / 100) * 100 + 200;
+            }
+
+            // Korlátozzuk a tartományt
+            if (lowerUnit < minValue) {
+                upperUnit += (minValue - lowerUnit);
+                lowerUnit = minValue;
+            }
+            if (upperUnit > maxValue) {
+                lowerUnit -= (upperUnit - maxValue);
+                upperUnit = maxValue;
+                if (lowerUnit < minValue) {
+                    lowerUnit = minValue;
+                }
+            }
+
+            // Kiszámoljuk a tényleges tick számot
+            let currentTicksToShow = Math.floor((upperUnit - lowerUnit) / roundingUnit) + 1;
+            if (roundingUnit === 10 && currentTicksToShow < 7) {
+                // Növeljük a tartományt, ha nem elegendő tick van
+                upperUnit += (7 - currentTicksToShow) * roundingUnit;
+                if (upperUnit > maxValue) {
+                    upperUnit = maxValue;
+                }
+                currentTicksToShow = Math.floor((upperUnit - lowerUnit) / roundingUnit) + 1;
+            } else if (roundingUnit === 100 && currentTicksToShow < 5) {
+                upperUnit += (5 - currentTicksToShow) * roundingUnit;
+                if (upperUnit > maxValue) {
+                    upperUnit = maxValue;
+                }
+                currentTicksToShow = Math.floor((upperUnit - lowerUnit) / roundingUnit) + 1;
+            }
+
+            // Számegyenes beállítása
+            const lineLength = 600; // Fix szélesség
+            const stepLength = lineLength / (currentTicksToShow - 1);
+
+            // Szám pozicionálása a középpontban
+            const centerX = 300; // SVG szélessége / 2
+            const numberPosition = (number - lowerUnit) / (upperUnit - lowerUnit) * lineLength;
+            const translateX = centerX - numberPosition;
+            group.setAttribute('transform', `translate(${translateX}, 0)`);
+
+            // Tickek és címkék hozzáadása
+            for (let i = 0; i < currentTicksToShow; i++) {
+                const currentTickValue = lowerUnit + i * roundingUnit;
+
+                // Csak akkor rajzoljuk meg, ha a tick értéke a tartományon belül van
+                if (currentTickValue >= minValue && currentTickValue <= maxValue) {
+                    const x = i * stepLength;
+
+                    // Tick vonal
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', roundingUnit === 10 ? 30 : 35); // Kicsit módosított y pozíció
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', roundingUnit === 10 ? 50 : 55);
+                    line.setAttribute('class', 'tick');
+                    line.setAttribute('data-value', currentTickValue);
+                    group.appendChild(line);
+
+                    // Címke
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute('x', x);
+                    label.setAttribute('y', roundingUnit === 10 ? 70 : 65); // Kicsit módosított y pozíció
+                    label.setAttribute('text-anchor', 'middle');
+                    label.setAttribute('class', 'label');
+                    label.textContent = currentTickValue;
+                    group.appendChild(label);
+                }
+            }
+
+            // Piros vonal a jelenlegi számhoz
+            const relativePosition = (number - lowerUnit) / (upperUnit - lowerUnit);
+            const currentX = relativePosition * lineLength;
+            const currentLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            currentLine.setAttribute('x1', currentX);
+            currentLine.setAttribute('y1', roundingUnit === 10 ? 20 : 25);
+            currentLine.setAttribute('x2', currentX);
+            currentLine.setAttribute('y2', roundingUnit === 10 ? 60 : 65);
+            currentLine.setAttribute('class', 'current-number-line');
+            group.appendChild(currentLine);
+        }
+
+        // Számegyenes megjelenítése/elrejtése
+        function toggleNumberLine() {
+            const numberLine = document.getElementById('number-line');
+            numberLine.classList.toggle('visible');
+        }
+
+        // Konfetti hozzáadása
+        function addConfetti() {
+            const card = document.querySelector('.card');
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = getRandomColor();
+                card.appendChild(confetti);
+                // Eltávolítjuk a konfettit az animáció után
+                setTimeout(() => {
+                    confetti.remove();
+                }, 2000);
+            }
+        }
+
+        // Véletlenszerű szín generálása
+        function getRandomColor() {
+            const colors = ['#FF6F61', '#6B5B95', '#88B04B', '#FFA500', '#E94E77', '#9B2335', '#FFD700', '#ADFF2F', '#00CED1', '#FF69B4', '#00BFFF'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Pozitív animáció megjelenítése
+        function showPositiveAnimation() {
+            // Lottie animáció pozitív válasz esetén (gyerekbarát)
+            const animationContainer = document.createElement('div');
+            animationContainer.style.position = 'absolute';
+            animationContainer.style.top = '50%';
+            animationContainer.style.left = '50%';
+            animationContainer.style.transform = 'translate(-50%, -50%)';
+            animationContainer.style.width = '200px';
+            animationContainer.style.height = '200px';
+            animationContainer.style.zIndex = '2';
+            document.body.appendChild(animationContainer);
+
+            // Vidám, gyerekbarát animáció URL-je
+            lottie.loadAnimation({
+                container: animationContainer,
+                renderer: 'svg',
+                loop: false,
+                autoplay: true,
+                path: 'https://lottie.host/b1696b53-51ba-4459-9c64-adf6bf0c7c1d/T4D4D0ZTt7.json' // Konfetti és kupa animáció URL-je
+            });
+
+            setTimeout(() => {
+                animationContainer.remove();
+            }, 3000);
+        }
+
+        // Negatív animáció megjelenítése
+        function showNegativeAnimation() {
+            // Lottie animáció negatív válasz esetén (gyerekbarát)
+            const animationContainer = document.createElement('div');
+            animationContainer.style.position = 'absolute';
+            animationContainer.style.top = '50%';
+            animationContainer.style.left = '50%';
+            animationContainer.style.transform = 'translate(-50%, -50%)';
+            animationContainer.style.width = '200px';
+            animationContainer.style.height = '200px';
+            animationContainer.style.zIndex = '2';
+            document.body.appendChild(animationContainer);
+
+            // Bátorító, gyerekbarát animáció URL-je
+            lottie.loadAnimation({
+                container: animationContainer,
+                renderer: 'svg',
+                loop: false,
+                autoplay: true,
+                path: 'https://lottie.host/2a8983d1-eecf-4106-9aaa-88ca12c7a0a5/nrwyIk9knJ.json' // Mosolygó arckifejezés animáció URL-je
+            });
+
+            setTimeout(() => {
+                animationContainer.remove();
+            }, 3000);
+        }
+
+        // Enter gomb támogatása a válasz ellenőrzéséhez
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkAnswer();
+            }
+        }
+
+        // Görgetés kezelése billentyűzet megjelenésekor
+        function handleResize() {
+            const card = document.querySelector('.card');
+            const numberLine = document.getElementById('number-line');
+            if (window.innerHeight < 600) { // Példa feltétel, igazítsd szükség szerint
+                card.style.maxHeight = '80vh';
+                card.style.overflowY = 'auto';
+            } else {
+                card.style.maxHeight = '';
+                card.style.overflowY = '';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
+        window.onload = () => {
+            generateNumber();
+            handleResize();
+        };
+    </script>
+</body>
+</html>
